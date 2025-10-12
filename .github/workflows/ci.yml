@@ -1,0 +1,21 @@
+name: CI
+
+on: [push, pull_request]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+
+  fypp-test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        profile: [debug, release]
+
+    steps:
+
+      - uses: actions/checkout@v5

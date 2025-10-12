@@ -80,3 +80,6 @@ jobs:
 
       - name: Verify fpm installation
         run: fpm --version
+
+      - name: Build library using fpm
+        run: fpm build --profile ${{ matrix.profile }}

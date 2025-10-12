@@ -1,0 +1,32 @@
+#:if defined('WITH_REAL32')
+
+    #:set REAL_KIND = 'real32'
+    #:set FORMAT    = 'ES15.08E2'
+
+#:elif defined('WITH_REAL64')
+
+    #:set REAL_KIND = 'real64'
+    #:set FORMAT    = 'ES24.16E3'
+
+#:elif defined('WITH_REAL128')
+
+    #:set REAL_KIND = 'real128'
+    #:set FORMAT    = 'ES44.35E4'
+
+#:endif
+
+#:set REAL_KINDS = ['real32', 'real64', 'real128']
+
+#:set FUNCTION_NAME_KERNEL = 'elliptic_nome'
+
+#:set MODULE_NAME_KERNEL = FUNCTION_NAME_KERNEL + '_fortran'
+
+#:set LST_COEFFICIENT = [1, 2, 15, 150, 1707, 20910, 268616, 3567400, 48555069]
+
+#:set LST_DEGREE = [1, 5, 9, 13, 17, 21, 25, 29, 33]
+
+#:set LEN_LST_DEGREE = len(LST_DEGREE)
+
+#:if len(LST_COEFFICIENT) != LEN_LST_DEGREE
+    #:stop 'len(LST_COEFFICIENT) .ne. len(LST_DEGREE)'
+#:endif

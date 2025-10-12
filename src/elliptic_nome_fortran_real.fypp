@@ -1,0 +1,364 @@
+#:mute
+
+    #:include 'common.fypp'
+
+    #:set MODULE_NAME = MODULE_NAME_KERNEL + '_' + REAL_KIND
+
+#:endmute
+module ${MODULE_NAME}$
+#:include 'module_description.fypp'
+
+    use, intrinsic :: iso_fortran_env , only: ${REAL_KIND}$
+
+    use, intrinsic :: ieee_arithmetic , only: ieee_quiet_nan
+    use, intrinsic :: ieee_arithmetic , only: ieee_value
+
+
+
+    implicit none
+
+
+
+    private
+
+
+
+#:for DEGREE in LST_DEGREE
+    public :: ${FUNCTION_NAME_KERNEL}$_${str(DEGREE).zfill(2)}$_${REAL_KIND}$
+#:endfor
+    public :: ${FUNCTION_NAME_KERNEL}$_auto_${REAL_KIND}$
+
+
+
+#:set DIGITS_RJUST = len( str(LST_COEFFICIENT[LEN_LST_DEGREE - 1]) )
+#:for I in range(LEN_LST_DEGREE)
+    real(${REAL_KIND}$), parameter :: c_${str(LST_DEGREE[I]).zfill(2)}$ = ${str(LST_COEFFICIENT[I]).rjust(DIGITS_RJUST)}$.0_${REAL_KIND}$
+#:endfor
+#:del DIGITS_RJUST
+
+    real(${REAL_KIND}$), parameter :: q_err = tiny(0.0_${REAL_KIND}$)
+
+
+
+    contains
+
+
+#:for DEGREE in LST_DEGREE
+#:set STR_DEGREE = str(DEGREE).zfill(2)
+#:set FUNCTION_NAME = FUNCTION_NAME_KERNEL + '_' + STR_DEGREE + '_' + REAL_KIND
+
+    elemental function ${FUNCTION_NAME}$(k) result(q)
+        #:include 'elliptic_nome_XX_description.fypp'
+        !! @note
+        !! - The elliptic modulus \( k \) should satisfy \( { k }^{ 2 } \le 1/2 \).
+        !! @endnote
+
+        real(${REAL_KIND}$), intent(in) :: k !! elliptic modulus \( k \)
+
+
+
+        real(${REAL_KIND}$) :: q !! elliptic nome \( q \)
+
+
+
+        real(${REAL_KIND}$) :: comp_k !! \( { k }^{ \prime } \)
+
+        real(${REAL_KIND}$) :: pw02_k !! \( { k }^{ 2 } \)
+
+        real(${REAL_KIND}$) :: sqrt_comp_k !! \( \sqrt{ { k }^{ \prime } } \)
+
+    #:if DEGREE == 1
+
+
+        call evaluate_modulus(k = k, pw02_k = pw02_k, comp_k = comp_k)
+
+        call calculate_pw01_epsilon(    &!
+        &        pw02_k   =      pw02_k , &!
+        &        comp_k   =      comp_k , &!
+        &   sqrt_comp_k   = sqrt_comp_k , &!
+        &        pw01_eps =           q   &!
+        )
+
+    #:else
+        real(${REAL_KIND}$) :: pw01_eps !! auxiliary parameter \( \varepsilon \)
+
+        real(${REAL_KIND}$) :: pw04_eps !! \( { \varepsilon }^{ 4 } \)
+
+
+
+        call evaluate_modulus(k = k, pw02_k = pw02_k, comp_k = comp_k)
+
+        call calculate_pw04_epsilon( &!
+        &        pw02_k   =      pw02_k   , &!
+        &        comp_k   =      comp_k   , &!
+        &   sqrt_comp_k   = sqrt_comp_k   , &!
+        &        pw01_eps =      pw01_eps , &!
+        &        pw04_eps =      pw04_eps   &!
+        )
+
+        q = &!
+            elliptic_nome_by_epsilon_${str(DEGREE).zfill(2)}$( &!
+                pw01_eps = pw01_eps , &!
+                pw04_eps = pw04_eps   &!
+            )
+
+    #:endif
+    end function ${FUNCTION_NAME}$
+
+
+#:del STR_DEGREE
+#:del FUNCTION_NAME
+#:endfor
+
+    #:set FUNCTION_NAME = FUNCTION_NAME_KERNEL + '_auto_' + REAL_KIND
+    elemental function ${FUNCTION_NAME}$(k) result(q)
+        !! Calculate the elliptic nome \( q \) 
+        !! for the given elliptic modulus \( k \)
+        !! @note
+        !! - The elliptic modulus \( k \) should satisfy \( { k }^{ 2 } \le 1/2 \).
+        !! - If the calculation does not converge, it returns NaN.
+        !! @endnote
+
+        real(${REAL_KIND}$), intent(in) :: k !! elliptic modulus \( k \)
+
+
+
+        real(${REAL_KIND}$) :: q !! elliptic nome \( q \)
+
+
+
+        real(${REAL_KIND}$) :: comp_k !! \( { k }^{ \prime } \)
+
+        real(${REAL_KIND}$) :: pw01_eps !! auxiliary parameter \( \varepsilon \)
+
+        real(${REAL_KIND}$) :: pw02_k !! \( { k }^{ 2 } \)
+
+        real(${REAL_KIND}$) :: pw04_eps !! \( { \varepsilon }^{ 4 } \)
+
+        real(${REAL_KIND}$) :: q_ref
+
+        real(${REAL_KIND}$) :: sqrt_comp_k !! \( \sqrt{ { k }^{ \prime } } \)
+
+
+
+        call evaluate_modulus(k = k, pw02_k = pw02_k, comp_k = comp_k)
+
+        call calculate_pw04_epsilon( &!
+        &        pw02_k   =      pw02_k   , &!
+        &        comp_k   =      comp_k   , &!
+        &   sqrt_comp_k   = sqrt_comp_k   , &!
+        &        pw01_eps =      pw01_eps , &!
+        &        pw04_eps =      pw04_eps   &!
+        )
+
+
+
+        q_ref = pw01_eps
+
+        q = &!
+            ${FUNCTION_NAME_KERNEL}$_by_epsilon_${str(LST_DEGREE[1]).zfill(2)}$( &!
+                pw01_eps = pw01_eps , &!
+                pw04_eps = pw04_eps   &!
+            )
+
+        if ( abs(q - q_ref) .lt. q_err ) return
+
+    #:for I in range( 2, len(LST_DEGREE) )
+
+
+        q_ref = q
+
+        q = &!
+            ${FUNCTION_NAME_KERNEL}$_by_epsilon_${str(LST_DEGREE[I]).zfill(2)}$( &!
+                pw01_eps = pw01_eps , &!
+                pw04_eps = pw04_eps   &!
+            )
+
+        if ( abs(q - q_ref) .lt. q_err ) return
+
+    #:endfor
+
+
+
+        q = ieee_value(q, ieee_quiet_nan)
+
+    end function ${FUNCTION_NAME}$
+    #:del FUNCTION_NAME
+
+
+#:for DEGREE in LST_DEGREE
+#:if DEGREE > 1
+
+    #:set FUNCTION_NAME = FUNCTION_NAME_KERNEL + '_by_epsilon_' + str(DEGREE).zfill(2)
+    elemental function ${FUNCTION_NAME}$(pw01_eps, pw04_eps) result(q)
+        #:include 'elliptic_nome_by_epsilon_XX_description.fypp'
+
+        real(${REAL_KIND}$), intent(in) :: pw01_eps !! auxiliary parameter \( \varepsilon \)
+
+        real(${REAL_KIND}$), intent(in) :: pw04_eps !! \( { \varepsilon }^{ 4 } \)
+
+
+
+        real(${REAL_KIND}$) :: q !! elliptic nome \( q \)
+
+
+
+        q = &!
+            ${FUNCTION_NAME}$_horner( &!
+                pw01_eps = pw01_eps , &!
+                pw04_eps = pw04_eps , &!
+                pre_step = c_${str(DEGREE).zfill(2)}$       &!
+            )
+
+    end function ${FUNCTION_NAME}$
+    #:del FUNCTION_NAME
+
+
+#:endif
+#:endfor
+
+
+#:for I in range(1,LEN_LST_DEGREE)
+#:set DEGREE = LST_DEGREE[I]
+#:if DEGREE > 1
+
+    #:set FUNCTION_NAME = FUNCTION_NAME_KERNEL + '_by_epsilon_' + str(DEGREE).zfill(2) + '_horner'
+    elemental function ${FUNCTION_NAME}$(pw01_eps, pw04_eps, pre_step) result(q)
+        !! Calculate the following for the given \( \varepsilon \) and \( { \varepsilon }^{ 4 } \):
+#:if I < 2
+        !! $$ \varepsilon ( ${LST_COEFFICIENT[0]}$ + { \varepsilon }^{ 4 } \cdot \texttt{pre_step} ) $$
+#:else
+    #:set J_MAX = I - 1 
+    #:set DIGITS_RJUST = len( str(LST_COEFFICIENT[J_MAX]) )
+        !! $$
+        !! \begin{aligned}
+        !! \varepsilon \cdot {}
+    #:for J in range(J_MAX)
+        !! & ( ${str(LST_COEFFICIENT[J]).rjust(DIGITS_RJUST)}$ + { \varepsilon }^{ 4 } \cdot \\
+    #:endfor
+        !! & ( ${str(LST_COEFFICIENT[J_MAX]).rjust(DIGITS_RJUST)}$ + { \varepsilon }^{ 4 } \cdot \texttt{pre_step} ) \\
+    #:for J in range(J_MAX)
+        !! & ) \\
+    #:endfor
+        !! \end{aligned}
+        !! $$
+    #:del DIGITS_RJUST
+    #:del J_MAX
+#:endif
+
+        real(${REAL_KIND}$), intent(in) :: pw01_eps !! auxiliary parameter \( \varepsilon \)
+
+        real(${REAL_KIND}$), intent(in) :: pw04_eps !! \( { \varepsilon }^{ 4 } \)
+
+        real(${REAL_KIND}$), intent(in) :: pre_step
+
+
+
+        real(${REAL_KIND}$) :: q !! elliptic nome \( q \)
+
+
+
+    #:if DEGREE > LST_DEGREE[1]
+        q = &!
+            ${FUNCTION_NAME_KERNEL}$_by_epsilon_${str(DEGREE - 4).zfill(2)}$_horner(&!
+                pw01_eps = pw01_eps                   , &!
+                pw04_eps = pw04_eps                   , &!
+                pre_step = pw04_eps * pre_step + c_${str(DEGREE - 4).zfill(2)}$   &!
+            )
+    #:else
+        q = pw01_eps * (c_01 + pre_step * pw04_eps)
+    #:endif
+
+    end function ${FUNCTION_NAME}$
+    #:del FUNCTION_NAME
+
+
+#:endif
+#:endfor
+
+    #:set SUBROUTINE_NAME = 'calculate_pw01_epsilon'
+    elemental subroutine ${SUBROUTINE_NAME}$(pw02_k, comp_k, sqrt_comp_k, pw01_eps)
+        !! calculate the auxiliary parameter \( \varepsilon \)
+        !! for the given elliptic modulus \( k \)
+
+        real(${REAL_KIND}$), intent(in) :: pw02_k !! \( { k }^{ 2 } \)
+
+        real(${REAL_KIND}$), intent(in) :: comp_k !! \( { k }^{ \prime } \)
+
+        real(${REAL_KIND}$), intent(out) :: sqrt_comp_k !! \( \sqrt{ { k }^{ \prime } } \)
+
+        real(${REAL_KIND}$), intent(out) :: pw01_eps !! auxiliary parameter \( \varepsilon \)
+
+
+
+        real(${REAL_KIND}$) :: pls1_comp_k !! \( 1 + { k }^{ \prime } \)
+
+
+
+        pls1_comp_k =      comp_k  + 1.0_${REAL_KIND}$
+        sqrt_comp_k = sqrt(comp_k)
+
+        pw01_eps = 0.5_${REAL_KIND}$ * pw02_k &!
+        &        / ( pls1_comp_k * ( pls1_comp_k + sqrt_comp_k + sqrt_comp_k ) )
+
+    end subroutine ${SUBROUTINE_NAME}$
+    #:del SUBROUTINE_NAME
+
+
+
+    #:set SUBROUTINE_NAME = 'calculate_pw04_epsilon'
+    elemental subroutine ${SUBROUTINE_NAME}$(pw02_k, comp_k, sqrt_comp_k, pw01_eps, pw04_eps)
+        !! calculate the auxiliary parameter \( \varepsilon \) and \( { \varepsilon }^{ 4 } \)
+        !! for the given elliptic modulus \( k \)
+
+        real(${REAL_KIND}$), intent(in) :: pw02_k !! \( { k }^{ 2 } \)
+
+        real(${REAL_KIND}$), intent(in) :: comp_k !! \( { k }^{ \prime } \)
+
+        real(${REAL_KIND}$), intent(out) :: sqrt_comp_k !! \( \sqrt{ { k }^{ \prime } } \)
+
+        real(${REAL_KIND}$), intent(out) :: pw01_eps !! auxiliary parameter \( \varepsilon \)
+
+        real(${REAL_KIND}$), intent(out) :: pw04_eps !! \( { \varepsilon }^{ 4 } \)
+
+
+
+        real(${REAL_KIND}$) :: pw02_eps
+
+
+
+        call calculate_pw01_epsilon( &!
+        &        pw02_k   = pw02_k      , &!
+        &        comp_k   = comp_k      , &!
+        &   sqrt_comp_k   = sqrt_comp_k , &!
+        &        pw01_eps = pw01_eps      &!
+        )
+
+        pw02_eps = pw01_eps * pw01_eps
+        pw04_eps = pw02_eps * pw02_eps
+
+    end subroutine ${SUBROUTINE_NAME}$
+    #:del SUBROUTINE_NAME
+
+
+
+    #:set SUBROUTINE_NAME = 'evaluate_modulus'
+    elemental subroutine ${SUBROUTINE_NAME}$(k, pw02_k, comp_k)
+        !! Calculate \( { k }^{ 2 } \) 
+        !! and \( { k }^{ \prime } := \sqrt{ 1 - { k }^{ 2 } } \) 
+        !! for the given elliptic modulus \( k \)
+
+        real(${REAL_KIND}$), intent(in) :: k !! elliptic modulus \( k \)
+
+        real(${REAL_KIND}$), intent(out) :: pw02_k !! \( { k }^{ 2 } \)
+
+        real(${REAL_KIND}$), intent(out) :: comp_k !! \( { k }^{ \prime } \)
+
+
+
+        pw02_k = k * k
+        comp_k = sqrt(1.0_${REAL_KIND}$ - pw02_k)
+
+    end subroutine ${SUBROUTINE_NAME}$
+
+end module ${MODULE_NAME}$

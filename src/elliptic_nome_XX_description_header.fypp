@@ -1,0 +1,3 @@
+        !! Calculate the elliptic nome \( q \) using
+        !! the Horner's method and
+        !! the following polynomial:

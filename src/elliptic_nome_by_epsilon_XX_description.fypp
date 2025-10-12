@@ -1,0 +1,6 @@
+#:include 'elliptic_nome_XX_description_header.fypp'
+        !! $$
+        !! \begin{align*}
+#:include 'elliptic_nome_XX_description_equation.fypp'
+        !! \end{align*}
+        !! $$

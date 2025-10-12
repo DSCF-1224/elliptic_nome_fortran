@@ -1,0 +1,7 @@
+#:include 'elliptic_nome_XX_description_header.fypp'
+        !! $$
+        !! \begin{align*}
+        !! \varepsilon &:= \frac{ 1 }{ 2 } \frac{ 1 - \sqrt{ { k }^{ \prime } } }{ 1 + \sqrt{ { k }^{ \prime } } } \\
+#:include 'elliptic_nome_XX_description_equation.fypp'
+        !! \end{align*}
+        !! $$

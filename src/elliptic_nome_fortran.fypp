@@ -1,0 +1,53 @@
+#:mute
+
+    #:include "common.fypp"
+
+#:endmute
+module ${MODULE_NAME_KERNEL}$
+#:include 'module_description.fypp'
+
+#:for REAL_KIND in REAL_KINDS
+    use, non_intrinsic :: ${MODULE_NAME_KERNEL}$_${REAL_KIND}$
+#:endfor
+
+
+
+    implicit none
+
+
+
+    private
+
+
+
+#:for DEGREE in LST_DEGREE
+    public :: ${FUNCTION_NAME_KERNEL}$_${str(DEGREE).zfill(2)}$
+#:endfor
+    public :: ${FUNCTION_NAME_KERNEL}$_auto
+
+
+#:for DEGREE in LST_DEGREE
+
+    #:set INTERFACE_NAME = FUNCTION_NAME_KERNEL + '_' + str(DEGREE).zfill(2)
+    interface ${INTERFACE_NAME}$
+        #:include 'elliptic_nome_XX_description.fypp'
+
+        #:for REAL_KIND in REAL_KINDS
+        module procedure :: ${INTERFACE_NAME}$_${REAL_KIND}$
+    #:endfor
+
+    end interface ${INTERFACE_NAME}$
+    #:del INTERFACE_NAME
+
+
+#:endfor
+
+    #:set INTERFACE_NAME = FUNCTION_NAME_KERNEL + '_auto'
+    interface ${INTERFACE_NAME}$
+    #:for REAL_KIND in REAL_KINDS
+        module procedure :: ${INTERFACE_NAME}$_${REAL_KIND}$
+    #:endfor
+    end interface ${INTERFACE_NAME}$
+    #:del INTERFACE_NAME
+
+end module ${MODULE_NAME_KERNEL}$

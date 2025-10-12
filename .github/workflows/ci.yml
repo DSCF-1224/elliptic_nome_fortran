@@ -73,3 +73,10 @@ jobs:
           ls -a
           cd ..
 
+      - name: Install fpm
+        uses: fortran-lang/setup-fpm@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify fpm installation
+        run: fpm --version

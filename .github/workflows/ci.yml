@@ -33,3 +33,10 @@ jobs:
 
       - name: Verify fypp installation
         run: fypp --version
+
+      - name: Run fypp
+        run: |
+          cd src
+          chmod +x ./run_fypp.sh
+          ./run_fypp.sh
+          cd ..

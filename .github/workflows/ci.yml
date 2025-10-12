@@ -19,3 +19,11 @@ jobs:
     steps:
 
       - uses: actions/checkout@v5
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v5
+        with:
+          python-version: '>=3.5'
+
+      - name: Verify python installation
+        run: python3 -V

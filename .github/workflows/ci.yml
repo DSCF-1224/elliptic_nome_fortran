@@ -27,3 +27,9 @@ jobs:
 
       - name: Verify python installation
         run: python3 -V
+
+      - name: Install fypp
+        run: pip install --upgrade fypp ninja
+
+      - name: Verify fypp installation
+        run: fypp --version

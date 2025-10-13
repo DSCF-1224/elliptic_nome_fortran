@@ -1,0 +1,432 @@
+#:mute
+
+    #:include '../src/common.fypp'
+
+    #:set PROGRAM_NAME = 'check_' + REAL_KIND
+
+#:endmute
+program ${PROGRAM_NAME}$
+
+    use, intrinsic :: iso_fortran_env , only: error_unit
+    use, intrinsic :: iso_fortran_env , only: ${REAL_KIND}$
+
+    use, intrinsic :: ieee_arithmetic , only: operator(.ne.)
+    use, intrinsic :: ieee_arithmetic , only: ieee_class
+    use, intrinsic :: ieee_arithmetic , only: ieee_positive_zero
+
+    use, non_intrinsic :: elliptic_nome_fortran
+
+
+
+    implicit none
+
+
+
+    integer, parameter :: len_str = 44
+
+    character(*), parameter :: file_k = 'test/k.dat'
+
+    character(*), parameter :: file_q = 'test/q.dat'
+
+
+
+    call check()
+
+
+
+    contains
+
+
+
+    #:set SUBROUTINE_NAME = 'check'
+    subroutine ${SUBROUTINE_NAME}$
+
+        integer :: cnt_k, cnt_q
+
+        integer :: file_unit
+
+        integer :: itr
+
+        integer :: stat
+
+        real(${REAL_KIND}$), allocatable, dimension(:) :: num_k, num_q_ref
+
+        real(${REAL_KIND}$), allocatable, dimension(:,:) :: num_q_err, num_q_res
+
+        character(256) :: msg
+
+        character(len_str), allocatable, dimension(:) :: str_k, str_q
+
+
+
+        call count_values( &!
+        file    = file_k , &!
+        iostat  = stat   , &!
+        iomsg   = msg    , &!
+        counter = cnt_k    &!
+        )
+
+        call count_values( &!!
+        file    = file_q , &!
+        iostat  = stat   , &!
+        iomsg   = msg    , &!
+        counter = cnt_q    &!
+        )
+
+
+
+        if (cnt_k .ne. cnt_q) then
+
+            write( unit = error_unit, fmt = * ) 'count k: ', cnt_k
+            write( unit = error_unit, fmt = * ) 'count q: ', cnt_q
+            write( unit = error_unit, fmt = * ) 'The size of k & q must be equal.'
+            error stop
+
+        else if ( cnt_k .lt. 1 ) then
+
+            write( unit = error_unit, fmt = * ) 'counter: ', cnt_k
+            write( unit = error_unit, fmt = * ) 'The size of vals must be greater than zero.'
+            error stop
+
+        end if
+
+
+
+        allocate( num_q_err(${LEN_LST_DEGREE + 1}$, cnt_q), stat = stat, errmsg = msg )
+
+        call export_msg(stat, msg)
+
+        allocate( num_q_res(${LEN_LST_DEGREE + 1}$, cnt_q), stat = stat, errmsg = msg )
+
+        call export_msg(stat, msg)
+
+
+
+        call read_values( &!
+        file    = file_k , &!
+        counter = cnt_k  , &!
+        stat    = stat   , &!
+        msg     = msg    , &!
+        num     = num_k  , &!
+        str     = str_k    &!
+        )
+
+        call read_values( &!
+        file    = file_q    , &!
+        counter = cnt_q     , &!
+        stat    = stat      , &!
+        msg     = msg       , &!
+        num     = num_q_ref , &!
+        str     = str_q       &!
+        )
+
+
+
+        do itr = 1, cnt_k
+
+            call check_kernel(&!
+            k     = num_k     (     itr ) , &!
+            q_ref = num_q_ref (     itr ) , &!
+            q_res = num_q_res ( : , itr ) , &!
+            q_err = num_q_err ( : , itr )   &!
+            )
+
+        end do
+
+
+
+        open( &!
+        file    = '${PROGRAM_NAME}$.md' , &!
+        newunit = file_unit , &!
+        action  = 'write'   , &!
+        status  = 'unknown' , &!
+        iostat  = stat      , &!
+        iomsg   = msg         &!
+        )
+
+        call export_msg(stat, msg)
+
+
+
+        write( &!
+        unit   = file_unit , &!
+        fmt    = '(A)'     , &!
+        iostat = stat      , &!
+        iomsg  = msg         &!
+        ) &!
+        '# check'
+
+        call export_msg(stat, msg)
+
+
+
+        do itr = 1, cnt_k
+
+            write( &!
+            unit   = file_unit , &!
+            fmt    = '(A)'     , &!
+            iostat = stat      , &!
+            iomsg  = msg         &!
+            ) &!
+            new_line('')         , &!
+            '## `k = '        //   &!
+            trim(str_k(itr))  //   &!
+            '_${REAL_KIND}$`'
+
+            call export_msg(stat, msg)
+
+
+
+            if (ieee_class(num_q_ref(itr)) .ne. ieee_positive_zero) then
+
+                write( &!
+                unit   = file_unit , &!
+                fmt    = '(A)'     , &!
+                iostat = stat      , &!
+                iomsg  = msg         &!
+                ) &!
+                new_line('') // '|degree|res|(relative err)/`machine epsilon`|' , &!
+                                '|:----:|:--|:-------------------------------|'
+
+            else
+
+                write( &!
+                unit   = file_unit , &!
+                fmt    = '(A)'     , &!
+                iostat = stat      , &!
+                iomsg  = msg         &!
+                ) &!
+                new_line('') // '|degree|res|err|' , &!
+                                '|:----:|:--|:--|'
+            end if
+
+            call export_msg(stat, msg)
+
+
+
+            write( &!
+            unit   = file_unit , &!
+            fmt    = '(SP,A,A,A,${FORMAT}$,A,${FORMAT}$,A)' , &!
+            iostat = stat      , &!
+            iomsg  = msg         &!
+            ) &!
+        #:for I in range(LEN_LST_DEGREE)
+        #:set NUM_DEGREE = LST_DEGREE[I]
+        #:set STR_DEGREE = str(NUM_DEGREE)
+            '|' , '${str(NUM_DEGREE).zfill(2).rjust(4)}$' , '|' , num_q_res(${str(I + 1).rjust(2)}$,itr) , '|' , num_q_err(${str(I + 1).rjust(2)}$,itr) , '|' , &!
+        #:del STR_DEGREE
+        #:del NUM_DEGREE
+        #:endfor
+            '|' , 'auto' , '|' , num_q_res(${str(I + 2).rjust(2)}$,itr) , '|' , num_q_err(${str(I + 2).rjust(2)}$,itr) , '|' , &!
+            '|' , 'ref ' , '|' , num_q_ref(   itr) , '|' , 0.0_${REAL_KIND}$  , '|'
+        #:del I
+
+            call export_msg(stat, msg)
+
+        end do
+
+    end subroutine ${SUBROUTINE_NAME}$
+
+
+
+    #:set SUBROUTINE_NAME = 'check_kernel'
+    subroutine ${SUBROUTINE_NAME}$(k, q_ref, q_res, q_err)
+
+        real(${REAL_KIND}$), intent(in) :: k
+
+        real(${REAL_KIND}$), intent(in) :: q_ref
+
+        real(${REAL_KIND}$), intent(out), dimension(${LEN_LST_DEGREE + 1}$) :: q_res, q_err
+
+
+
+    #:for I in range(LEN_LST_DEGREE)
+    #:set NUM_DEGREE = LST_DEGREE[I]
+    #:set STR_DEGREE = str(NUM_DEGREE)
+        q_res(${str(I + 1).rjust(2)}$) = elliptic_nome_${STR_DEGREE.zfill(2).ljust(5)}$(k)
+    #:del STR_DEGREE
+    #:del NUM_DEGREE
+    #:endfor
+        q_res(${str(I + 2).rjust(2)}$) = elliptic_nome_auto (k)
+    #:del I
+
+        q_err(:) = q_res(:) - q_ref
+
+        if (ieee_class(q_ref) .ne. ieee_positive_zero) then
+            q_err(:) = q_err(:) / q_ref / epsilon(k)
+        end if
+
+    end subroutine ${SUBROUTINE_NAME}$
+
+
+
+    #:set SUBROUTINE_NAME = 'count_values'
+    subroutine ${SUBROUTINE_NAME}$(file, iostat, iomsg, counter)
+
+        character(*), intent(in) :: file
+
+        integer, intent(out) :: iostat
+
+        character(*), intent(inout) :: iomsg
+
+        integer, intent(out) :: counter
+
+
+
+        integer :: file_unit
+
+        real(${REAL_KIND}$) :: dummy
+
+
+
+        open( &!
+        file    = file        , &!
+        newunit = file_unit   , &!
+        action  = 'read'      , &!
+        form    = 'formatted' , &!
+        status  = 'old'       , &!
+        iostat  = iostat      , &!
+        iomsg   = iomsg         &!
+        )
+
+        call export_msg(iostat, iomsg)
+
+
+
+        counter = 0
+
+        do
+
+            read( &!
+            unit   = file_unit , &!
+            fmt    = *         , &!
+            iostat = iostat    , &!
+            iomsg  = iomsg       &!
+            ) &!
+            dummy
+
+            if ( iostat .eq. 0 ) then
+                counter = &!
+                counter + 1
+            else if ( is_iostat_end(iostat) ) then
+                return
+            else
+                call export_msg(iostat, iomsg)
+            end if
+
+        end do
+
+
+
+        close(file_unit)
+
+    end subroutine ${SUBROUTINE_NAME}$
+
+
+
+    #:set SUBROUTINE_NAME = 'export_msg'
+    subroutine ${SUBROUTINE_NAME}$(stat, msg)
+
+        integer, intent(in) :: stat
+
+        character(*), intent(in) :: msg
+
+
+
+        if ( stat .ne. 0 ) then
+            write( unit = error_unit, fmt = '(A,I0)' ) 'stat : ', stat
+            write( unit = error_unit, fmt = '(A,A )' ) 'msg  : ', trim(msg)
+            error stop
+        end if
+
+    end subroutine ${SUBROUTINE_NAME}$
+
+
+
+    #:set SUBROUTINE_NAME = 'read_values'
+    subroutine ${SUBROUTINE_NAME}$(file, counter, stat, msg, num, str)
+
+        character(*), intent(in) :: file
+
+        integer, intent(in) :: counter
+
+        integer, intent(out) :: stat
+
+        character(*), intent(inout) :: msg
+
+        real(${REAL_KIND}$), intent(inout), allocatable :: num(:)
+
+        character(len_str), intent(inout), allocatable :: str(:)
+
+
+
+        integer :: file_unit
+
+        integer :: itr
+
+
+
+        allocate( num(counter), stat = stat, errmsg = msg )
+
+        call export_msg(stat, msg)
+
+        allocate( str(counter), stat = stat, errmsg = msg )
+
+        call export_msg(stat, msg)
+
+
+
+        open( &!
+        file    = file        , &!
+        newunit = file_unit   , &!
+        action  = 'read'      , &!
+        form    = 'formatted' , &!
+        status  = 'old'       , &!
+        iostat  = stat        , &!
+        iomsg   = msg           &!
+        )
+
+        if ( stat .ne. 0 ) then
+            write( unit = error_unit, fmt = '(A)' ) trim(msg)
+            error stop
+        end if
+
+
+
+        do itr = 1, counter
+
+            read( &!
+            unit   = file_unit , &!
+            fmt    = '(A)'     , &!
+            iostat  = stat     , &!
+            iomsg   = msg        &!
+            ) &!
+            str(itr)
+
+            if ( stat .ne. 0 ) then
+                write( unit = error_unit, fmt = '(A)' ) trim(msg)
+                error stop
+            end if
+
+            read( &!
+            unit   = str(itr) , &!
+            fmt    = *        , &!
+            iostat  = stat    , &!
+            iomsg   = msg       &!
+            ) &!
+            num(itr)
+
+            if ( stat .ne. 0 ) then
+                write( unit = error_unit, fmt = '(A)' ) trim(msg)
+                error stop
+            end if
+
+        end do
+
+
+
+        close(file_unit)
+
+    end subroutine ${SUBROUTINE_NAME}$
+
+end program ${PROGRAM_NAME}$

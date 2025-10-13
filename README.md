@@ -1,6 +1,6 @@
 # elliptic_nome_fortran
 
-Compute nome $ q $ for elliptic integrals corresponding to modulus $ k $
+Compute nome $q$ for elliptic integrals corresponding to modulus $k$
 
 $$
 \begin{align*}

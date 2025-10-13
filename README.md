@@ -18,3 +18,4 @@ $$
   培風館, 1972.  
   数理科学シリーズ ; 5  
   [NDLサーチ](https://ndlsearch.ndl.go.jp/books/R100000039-I2422322)
+- [A002103 - OEIS](https://oeis.org/A002103)

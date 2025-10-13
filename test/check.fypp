@@ -7,6 +7,8 @@
 #:endmute
 program ${PROGRAM_NAME}$
 
+    use, intrinsic :: iso_fortran_env , only: compiler_options
+    use, intrinsic :: iso_fortran_env , only: compiler_version
     use, intrinsic :: iso_fortran_env , only: error_unit
     use, intrinsic :: iso_fortran_env , only: ${REAL_KIND}$
 
@@ -56,6 +58,8 @@ program ${PROGRAM_NAME}$
         character(256) :: msg
 
         character(len_str), allocatable, dimension(:) :: str_k, str_q
+
+        character(:), allocatable :: str_compiler_options
 
 
 
@@ -148,13 +152,43 @@ program ${PROGRAM_NAME}$
 
 
 
+        str_compiler_options = compiler_options()
+
+        block
+
+            integer :: i
+
+            do
+
+                i = index(str_compiler_options, ' -')
+
+                print *, i
+
+                if (i .eq. 0) exit
+
+                str_compiler_options(i:i) = new_line('')
+
+            end do
+
+        end block
+
+
+
         write( &!
         unit   = file_unit , &!
         fmt    = '(A)'     , &!
         iostat = stat      , &!
         iomsg  = msg         &!
         ) &!
-        '# check'
+        '# check'            // new_line('') , &!
+        '[compiler version]' // new_line('') , &!
+        '```'                                , &!
+        compiler_version()                   , &!
+        '```'                // new_line('') , &!
+        '[compiler options]' // new_line('') , &!
+        '```'                                , &!
+        str_compiler_options                 , &!
+        '```'
 
         call export_msg(stat, msg)
 

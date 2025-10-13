@@ -157,9 +157,28 @@ jobs:
       - name: Generate the documentation
         run: ford ford.md
 
-      - name: Upload documentation
-        uses: actions/upload-artifact@v4
+      - name: Upload documentation files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v4
         with:
-          name: documentation
           path: doc
-          if-no-files-found: error
+
+  deploy-documentation:
+
+    needs: ford
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

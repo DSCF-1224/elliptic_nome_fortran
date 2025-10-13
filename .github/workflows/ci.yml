@@ -40,11 +40,18 @@ jobs:
           ./run_fypp.sh
           cd ..
 
-      - name: Upload artifacts
+      - name: Upload artifacts (src)
         uses: actions/upload-artifact@v4
         with:
           name: src-f90
           path: src/*.f90
+          retention-days: 1
+
+      - name: Upload artifacts (test)
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-f90
+          path: test/*.f90
           retention-days: 1
 
   test:

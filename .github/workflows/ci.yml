@@ -113,3 +113,33 @@ jobs:
           name: check-${{ matrix.profile }}
           path: check*.md
           retention-days: 1
+
+  ford:
+
+    needs: test
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+
+      - name: Verify python installation
+        run: python3 -V
+
+      - name: Install FORD
+        run: sudo pip install ford
+
+      - name: Verify FORD installation
+        run: ford --version
+
+      - name: Install Graphviz
+        run: sudo apt-get install -y graphviz
+
+      - name: Verify Graphviz installation
+        run: dot -V

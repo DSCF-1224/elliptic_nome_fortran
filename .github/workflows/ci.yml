@@ -35,6 +35,9 @@ jobs:
           cd src
           chmod +x ./run_fypp.sh
           ./run_fypp.sh
+          cd ../test
+          chmod +x ./run_fypp.sh
+          ./run_fypp.sh
           cd ..
 
       - name: Upload artifacts

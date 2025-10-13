@@ -163,6 +163,12 @@ jobs:
           name: check-debug
           path: doc/check/debug
 
+      - name: Download result of tests (release mode)
+        uses: actions/download-artifact@v4
+        with:
+          name: check-release
+          path: doc/check/release
+
       - name: Upload documentation files as artifact
         id: deployment
         uses: actions/upload-pages-artifact@v4

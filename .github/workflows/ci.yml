@@ -106,3 +106,10 @@ jobs:
 
       - name: Test library using fpm (${{ matrix.profile }} mode)
         run: fpm test --profile ${{ matrix.profile }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: check-${{ matrix.profile }}
+          path: check*.md
+          retention-days: 1

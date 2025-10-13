@@ -5,7 +5,7 @@ Compute nome $q$ for elliptic integrals corresponding to modulus $k$
 ```math
 \begin{align*}
 K (k) &= \int_{ 0 }^{ \pi / 2 } \frac{ d \theta }{ \sqrt{ 1 - { k }^{ 2 } \sin^{ 2 } \theta } } \\
-{ k }^{ \prime } &= \sqrt{ 1 - { k }^{ 2 } } \\
+{ k }^{ \prime } &= \sqrt{1 - { k }^{ 2 }} \\
 { K }^{ \prime } (k) &= K ( { k }^{ \prime } ) \\
 q &= e^{ - \pi { K }^{ \prime } (k) / K (k) }
 \end{align*}

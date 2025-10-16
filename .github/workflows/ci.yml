@@ -54,6 +54,22 @@ jobs:
           path: test/*.f90
           retention-days: 1
 
+      - name: Commit and push generated Fortran code
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout -B generated
+          git add src/*.f90 test/*.f90
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update generated Fortran code"
+            git push origin generated --force
+          fi
+
   test:
 
     needs: fypp

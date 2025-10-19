@@ -149,8 +149,7 @@ jobs:
       - name: Verify FORD installation
         run: ford --version
 
-      - name: Install Graphviz
-        run: sudo apt-get install -y graphviz
+      - uses: ts-graphviz/setup-graphviz@v2
 
       - name: Verify Graphviz installation
         run: dot -V

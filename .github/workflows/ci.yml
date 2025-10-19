@@ -83,6 +83,7 @@ jobs:
     strategy:
       matrix:
         profile: [debug, release]
+      fail-fast: false
 
     steps:
 

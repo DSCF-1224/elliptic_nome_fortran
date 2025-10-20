@@ -71,7 +71,7 @@ module elliptic_nome_fortran_real32
         !! $$
         !! \begin{align*}
         !! \varepsilon &:= \frac{ 1 }{ 2 } \frac{ 1 - \sqrt{ { k }^{ \prime } } }{ 1 + \sqrt{ { k }^{ \prime } } } \\
-        !! q(\varepsilon) &:=            \varepsilon
+        !! q(\varepsilon) &:=     \varepsilon
         !! \end{align*}
         !! $$
         !! @note
@@ -114,8 +114,8 @@ module elliptic_nome_fortran_real32
         !! $$
         !! \begin{align*}
         !! \varepsilon &:= \frac{ 1 }{ 2 } \frac{ 1 - \sqrt{ { k }^{ \prime } } }{ 1 + \sqrt{ { k }^{ \prime } } } \\
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
+        !! q(\varepsilon) &:=     \varepsilon
+        !!             \\ & + 2 { \varepsilon }^{  5 }
         !! \end{align*}
         !! $$
         !! @note
@@ -169,9 +169,9 @@ module elliptic_nome_fortran_real32
         !! $$
         !! \begin{align*}
         !! \varepsilon &:= \frac{ 1 }{ 2 } \frac{ 1 - \sqrt{ { k }^{ \prime } } }{ 1 + \sqrt{ { k }^{ \prime } } } \\
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
+        !! q(\varepsilon) &:=      \varepsilon
+        !!             \\ & +  2 { \varepsilon }^{  5 }
+        !!             \\ & + 15 { \varepsilon }^{  9 }
         !! \end{align*}
         !! $$
         !! @note
@@ -225,10 +225,10 @@ module elliptic_nome_fortran_real32
         !! $$
         !! \begin{align*}
         !! \varepsilon &:= \frac{ 1 }{ 2 } \frac{ 1 - \sqrt{ { k }^{ \prime } } }{ 1 + \sqrt{ { k }^{ \prime } } } \\
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
-        !!             \\ & +      150 { \varepsilon }^{ 13 }
+        !! q(\varepsilon) &:=       \varepsilon
+        !!             \\ & +   2 { \varepsilon }^{  5 }
+        !!             \\ & +  15 { \varepsilon }^{  9 }
+        !!             \\ & + 150 { \varepsilon }^{ 13 }
         !! \end{align*}
         !! $$
         !! @note
@@ -282,11 +282,11 @@ module elliptic_nome_fortran_real32
         !! $$
         !! \begin{align*}
         !! \varepsilon &:= \frac{ 1 }{ 2 } \frac{ 1 - \sqrt{ { k }^{ \prime } } }{ 1 + \sqrt{ { k }^{ \prime } } } \\
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
-        !!             \\ & +      150 { \varepsilon }^{ 13 }
-        !!             \\ & +     1707 { \varepsilon }^{ 17 }
+        !! q(\varepsilon) &:=        \varepsilon
+        !!             \\ & +    2 { \varepsilon }^{  5 }
+        !!             \\ & +   15 { \varepsilon }^{  9 }
+        !!             \\ & +  150 { \varepsilon }^{ 13 }
+        !!             \\ & + 1707 { \varepsilon }^{ 17 }
         !! \end{align*}
         !! $$
         !! @note
@@ -340,12 +340,12 @@ module elliptic_nome_fortran_real32
         !! $$
         !! \begin{align*}
         !! \varepsilon &:= \frac{ 1 }{ 2 } \frac{ 1 - \sqrt{ { k }^{ \prime } } }{ 1 + \sqrt{ { k }^{ \prime } } } \\
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
-        !!             \\ & +      150 { \varepsilon }^{ 13 }
-        !!             \\ & +     1707 { \varepsilon }^{ 17 }
-        !!             \\ & +    20910 { \varepsilon }^{ 21 }
+        !! q(\varepsilon) &:=         \varepsilon
+        !!             \\ & +     2 { \varepsilon }^{  5 }
+        !!             \\ & +    15 { \varepsilon }^{  9 }
+        !!             \\ & +   150 { \varepsilon }^{ 13 }
+        !!             \\ & +  1707 { \varepsilon }^{ 17 }
+        !!             \\ & + 20910 { \varepsilon }^{ 21 }
         !! \end{align*}
         !! $$
         !! @note
@@ -399,13 +399,13 @@ module elliptic_nome_fortran_real32
         !! $$
         !! \begin{align*}
         !! \varepsilon &:= \frac{ 1 }{ 2 } \frac{ 1 - \sqrt{ { k }^{ \prime } } }{ 1 + \sqrt{ { k }^{ \prime } } } \\
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
-        !!             \\ & +      150 { \varepsilon }^{ 13 }
-        !!             \\ & +     1707 { \varepsilon }^{ 17 }
-        !!             \\ & +    20910 { \varepsilon }^{ 21 }
-        !!             \\ & +   268616 { \varepsilon }^{ 25 }
+        !! q(\varepsilon) &:=          \varepsilon
+        !!             \\ & +      2 { \varepsilon }^{  5 }
+        !!             \\ & +     15 { \varepsilon }^{  9 }
+        !!             \\ & +    150 { \varepsilon }^{ 13 }
+        !!             \\ & +   1707 { \varepsilon }^{ 17 }
+        !!             \\ & +  20910 { \varepsilon }^{ 21 }
+        !!             \\ & + 268616 { \varepsilon }^{ 25 }
         !! \end{align*}
         !! $$
         !! @note
@@ -459,14 +459,14 @@ module elliptic_nome_fortran_real32
         !! $$
         !! \begin{align*}
         !! \varepsilon &:= \frac{ 1 }{ 2 } \frac{ 1 - \sqrt{ { k }^{ \prime } } }{ 1 + \sqrt{ { k }^{ \prime } } } \\
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
-        !!             \\ & +      150 { \varepsilon }^{ 13 }
-        !!             \\ & +     1707 { \varepsilon }^{ 17 }
-        !!             \\ & +    20910 { \varepsilon }^{ 21 }
-        !!             \\ & +   268616 { \varepsilon }^{ 25 }
-        !!             \\ & +  3567400 { \varepsilon }^{ 29 }
+        !! q(\varepsilon) &:=           \varepsilon
+        !!             \\ & +       2 { \varepsilon }^{  5 }
+        !!             \\ & +      15 { \varepsilon }^{  9 }
+        !!             \\ & +     150 { \varepsilon }^{ 13 }
+        !!             \\ & +    1707 { \varepsilon }^{ 17 }
+        !!             \\ & +   20910 { \varepsilon }^{ 21 }
+        !!             \\ & +  268616 { \varepsilon }^{ 25 }
+        !!             \\ & + 3567400 { \varepsilon }^{ 29 }
         !! \end{align*}
         !! $$
         !! @note
@@ -726,8 +726,8 @@ module elliptic_nome_fortran_real32
         !! the following polynomial:
         !! $$
         !! \begin{align*}
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
+        !! q(\varepsilon) &:=     \varepsilon
+        !!             \\ & + 2 { \varepsilon }^{  5 }
         !! \end{align*}
         !! $$
 
@@ -758,9 +758,9 @@ module elliptic_nome_fortran_real32
         !! the following polynomial:
         !! $$
         !! \begin{align*}
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
+        !! q(\varepsilon) &:=      \varepsilon
+        !!             \\ & +  2 { \varepsilon }^{  5 }
+        !!             \\ & + 15 { \varepsilon }^{  9 }
         !! \end{align*}
         !! $$
 
@@ -791,10 +791,10 @@ module elliptic_nome_fortran_real32
         !! the following polynomial:
         !! $$
         !! \begin{align*}
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
-        !!             \\ & +      150 { \varepsilon }^{ 13 }
+        !! q(\varepsilon) &:=       \varepsilon
+        !!             \\ & +   2 { \varepsilon }^{  5 }
+        !!             \\ & +  15 { \varepsilon }^{  9 }
+        !!             \\ & + 150 { \varepsilon }^{ 13 }
         !! \end{align*}
         !! $$
 
@@ -825,11 +825,11 @@ module elliptic_nome_fortran_real32
         !! the following polynomial:
         !! $$
         !! \begin{align*}
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
-        !!             \\ & +      150 { \varepsilon }^{ 13 }
-        !!             \\ & +     1707 { \varepsilon }^{ 17 }
+        !! q(\varepsilon) &:=        \varepsilon
+        !!             \\ & +    2 { \varepsilon }^{  5 }
+        !!             \\ & +   15 { \varepsilon }^{  9 }
+        !!             \\ & +  150 { \varepsilon }^{ 13 }
+        !!             \\ & + 1707 { \varepsilon }^{ 17 }
         !! \end{align*}
         !! $$
 
@@ -860,12 +860,12 @@ module elliptic_nome_fortran_real32
         !! the following polynomial:
         !! $$
         !! \begin{align*}
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
-        !!             \\ & +      150 { \varepsilon }^{ 13 }
-        !!             \\ & +     1707 { \varepsilon }^{ 17 }
-        !!             \\ & +    20910 { \varepsilon }^{ 21 }
+        !! q(\varepsilon) &:=         \varepsilon
+        !!             \\ & +     2 { \varepsilon }^{  5 }
+        !!             \\ & +    15 { \varepsilon }^{  9 }
+        !!             \\ & +   150 { \varepsilon }^{ 13 }
+        !!             \\ & +  1707 { \varepsilon }^{ 17 }
+        !!             \\ & + 20910 { \varepsilon }^{ 21 }
         !! \end{align*}
         !! $$
 
@@ -896,13 +896,13 @@ module elliptic_nome_fortran_real32
         !! the following polynomial:
         !! $$
         !! \begin{align*}
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
-        !!             \\ & +      150 { \varepsilon }^{ 13 }
-        !!             \\ & +     1707 { \varepsilon }^{ 17 }
-        !!             \\ & +    20910 { \varepsilon }^{ 21 }
-        !!             \\ & +   268616 { \varepsilon }^{ 25 }
+        !! q(\varepsilon) &:=          \varepsilon
+        !!             \\ & +      2 { \varepsilon }^{  5 }
+        !!             \\ & +     15 { \varepsilon }^{  9 }
+        !!             \\ & +    150 { \varepsilon }^{ 13 }
+        !!             \\ & +   1707 { \varepsilon }^{ 17 }
+        !!             \\ & +  20910 { \varepsilon }^{ 21 }
+        !!             \\ & + 268616 { \varepsilon }^{ 25 }
         !! \end{align*}
         !! $$
 
@@ -933,14 +933,14 @@ module elliptic_nome_fortran_real32
         !! the following polynomial:
         !! $$
         !! \begin{align*}
-        !! q(\varepsilon) &:=            \varepsilon
-        !!             \\ & +        2 { \varepsilon }^{  5 }
-        !!             \\ & +       15 { \varepsilon }^{  9 }
-        !!             \\ & +      150 { \varepsilon }^{ 13 }
-        !!             \\ & +     1707 { \varepsilon }^{ 17 }
-        !!             \\ & +    20910 { \varepsilon }^{ 21 }
-        !!             \\ & +   268616 { \varepsilon }^{ 25 }
-        !!             \\ & +  3567400 { \varepsilon }^{ 29 }
+        !! q(\varepsilon) &:=           \varepsilon
+        !!             \\ & +       2 { \varepsilon }^{  5 }
+        !!             \\ & +      15 { \varepsilon }^{  9 }
+        !!             \\ & +     150 { \varepsilon }^{ 13 }
+        !!             \\ & +    1707 { \varepsilon }^{ 17 }
+        !!             \\ & +   20910 { \varepsilon }^{ 21 }
+        !!             \\ & +  268616 { \varepsilon }^{ 25 }
+        !!             \\ & + 3567400 { \varepsilon }^{ 29 }
         !! \end{align*}
         !! $$
 

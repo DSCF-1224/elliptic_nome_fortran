@@ -26,7 +26,8 @@ module ${MODULE_NAME_KERNEL}$
     public :: ${FUNCTION_NAME_KERNEL}$_auto
 
 
-#:for DEGREE in LST_DEGREE
+#:for I in range(LEN_LST_DEGREE)
+#:set DEGREE = LST_DEGREE[I]
 
     #:set INTERFACE_NAME = FUNCTION_NAME_KERNEL + '_' + str(DEGREE).zfill(2)
     interface ${INTERFACE_NAME}$
@@ -40,6 +41,7 @@ module ${MODULE_NAME_KERNEL}$
     #:del INTERFACE_NAME
 
 
+#:del DEGREE
 #:endfor
 
     #:set INTERFACE_NAME = FUNCTION_NAME_KERNEL + '_auto'

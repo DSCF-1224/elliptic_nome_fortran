@@ -43,7 +43,8 @@ module ${MODULE_NAME}$
     contains
 
 
-#:for DEGREE in LST_DEGREE
+#:for I in range(LEN_LST_DEGREE)
+#:set DEGREE = LST_DEGREE[I]
 #:set STR_DEGREE = str(DEGREE).zfill(2)
 #:set FUNCTION_NAME = FUNCTION_NAME_KERNEL + '_' + STR_DEGREE + '_' + REAL_KIND
 
@@ -106,6 +107,7 @@ module ${MODULE_NAME}$
     end function ${FUNCTION_NAME}$
 
 
+#:del DEGREE
 #:del STR_DEGREE
 #:del FUNCTION_NAME
 #:endfor
@@ -186,7 +188,8 @@ module ${MODULE_NAME}$
     #:del FUNCTION_NAME
 
 
-#:for DEGREE in LST_DEGREE
+#:for I in range(LEN_LST_DEGREE)
+#:set DEGREE = LST_DEGREE[I]
 #:if DEGREE > 1
 
     #:set FUNCTION_NAME = FUNCTION_NAME_KERNEL + '_by_epsilon_' + str(DEGREE).zfill(2)

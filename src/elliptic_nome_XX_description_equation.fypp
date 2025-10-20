@@ -1,8 +1,8 @@
-#:set DIGITS_RJUST = len( str(LST_COEFFICIENT[LEN_LST_DEGREE - 1]) )
+#:set DIGITS_RJUST = len( str(LST_COEFFICIENT[I]) )
         !! q(\varepsilon) &:= ${" " * DIGITS_RJUST}$   \varepsilon
-#:for I in range(1,LEN_LST_DEGREE)
-    #:if LST_DEGREE[I] <= DEGREE
-        !!             \\ & + ${str(LST_COEFFICIENT[I]).rjust(DIGITS_RJUST)}$ { \varepsilon }^{ ${str(LST_DEGREE[I]).rjust(2)}$ }
+#:for J in range(1,LEN_LST_DEGREE)
+    #:if LST_DEGREE[J] <= DEGREE
+        !!             \\ & + ${str(LST_COEFFICIENT[J]).rjust(DIGITS_RJUST)}$ { \varepsilon }^{ ${str(LST_DEGREE[J]).rjust(2)}$ }
     #:endif
 #:endfor
 #:del DIGITS_RJUST

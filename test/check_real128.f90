@@ -154,8 +154,6 @@ program check_real128
 
                 i = index(str_compiler_options, ' -')
 
-                print *, i
-
                 if (i .eq. 0) exit
 
                 str_compiler_options(i:i) = new_line('')

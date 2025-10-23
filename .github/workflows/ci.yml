@@ -156,7 +156,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git checkout -B generated
-          git add src/*.f90 test/*.f90 test/*.md
+          git add src/*.f90 test/*.f90 test/debug/*.md test/release/*.md
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
